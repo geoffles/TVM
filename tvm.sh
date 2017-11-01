@@ -42,6 +42,22 @@ function tvm()
 		return
 	fi
 
+	if [ "$1" == "remove" ]
+	then
+		TARGET="$TERRAFORM_DIR/$2"
+
+		echo "Removing $TARGET..."
+
+		if [ -z "$2" ]
+		then
+			return
+		fi
+
+		rm -r $TARGET
+
+
+	fi
+
 	if [ ! -d "$TERRAFORM_DIR/$1" ]
 	then
 	 echo -e "Terraform version $1 not found"
@@ -52,7 +68,10 @@ function tvm()
 
 	for d in $(ls -l $TERRAFORM_DIR | awk '/^d/{print $9;}')
 	do
-		PATH="$(echo $PATH | sed -e 's/$TERRAFORM_DIR\/$d\/://')"    
+		DIR="$TERRAFORM_DIR/$d"
+		ESCAPED_DIR=$(echo $DIR | sed -e 's/\//\\\//g')
+		SED_CMD="s/$ESCAPED_DIR://"
+		PATH=$(echo $PATH | sed -e "$SED_CMD")
 	done
 
 	PATH="$(echo -e "$TERRAFORM_DIR/$1/:$PATH")"	
