@@ -25,8 +25,20 @@ function tvm()
 			echo "You must specify a terraform version!"
 			return
 		fi
-		
-		echo -e "https://releases.hashicorp.com/terraform/$2/terraform_$2_$PLATFORM.zip -> $TERRAFORM_DIR/$2..."
+
+		SOURCE="https://releases.hashicorp.com/terraform/$2/terraform_$2_$PLATFORM.zip"
+		TARGET="$TERRAFORM_DIR/$2"
+		CURL_OUTPUT="./terraform_$2_$PLATFORM.zip"
+
+		mkdir $TARGET
+		pushd $TARGET
+
+		echo -e " $SOURCE -> $TARGET..."
+		curl --output $CURL_OUTPUT $SOURCE
+		unzip $CURL_OUTPUT
+
+		popd
+
 		return
 	fi
 
